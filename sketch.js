@@ -32,7 +32,12 @@ function setup() {
   player = Bodies.rectangle(250, playerBase.position.y - 160, 50, 180, options);
   World.add(world,player)
 
-  playerArcher = new PlayerArcher(300,playerBase.position.y - 112,120,120);
+  playerArcher = new PlayerArcher(
+    300,
+    playerBase.position.y - 112,
+    120,
+    120
+  );
 
   board1 = new Board(width - 300, 330, 50, 200);
   board2 = new Board(width - 550, height - 300, 50, 200);
@@ -46,10 +51,33 @@ function draw() {
   Engine.update(engine);
   playerArcher.display();
 
+  board1.display();
+  board2.display();
 
   for (var i = 0; i < playerArrows.length; i++) {
     if (playerArrows[i] !== undefined) {
       playerArrows[i].display();
+
+      var board1Collision = Matter.SAT.collides(board1.body,playerArrows[i].body);
+      var board2Collision = Matter.SAT.collides(board2.body,playerArrows[i].body);
+
+      if(board1Collision.collided||board2Collision.collided){
+        console.log("Collided");
+        playerArrows[i].remove(i);
+      }
+
+      //[optional code to add trajectory of arrow]
+      
+      // var posX = playerArrows[i].body.position.x;
+      // var posY = playerArrows[i].body.position.y;
+
+      // if (posX > width || posY > height) {
+      //   if (!playerArrows[i].isRemoved) {
+      //     playerArrows[i].remove(i);
+      //   } else {
+      //     playerArrows[i].trajectory = [];
+      //   }
+      // }
     }
   }
 
@@ -59,8 +87,6 @@ function draw() {
   textSize(40);
   text("EPIC ARCHERY", width / 2, 100);
 
-  board1.display();
-  board2.display();
 }
 
 function keyPressed() {
